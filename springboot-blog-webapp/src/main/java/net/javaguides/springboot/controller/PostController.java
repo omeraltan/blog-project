@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -87,6 +84,15 @@ public class PostController {
         PostDto postDto = postService.findPostByUrl(postUrl);
         model.addAttribute("post", postDto);
         return "/admin/view_post";
+    }
+
+    // handler method to handle search blog posts request
+    // localhost:8080/admin/posts/search?query=java
+    @GetMapping("/admin/posts/search")
+    public String searchPosts(@RequestParam(value = "query") String query, Model model){
+        List<PostDto> posts = postService.searchPosts(query);
+        model.addAttribute("posts", posts);
+        return "/admin/posts";
     }
 
     private static String getUrl(String postTitle){
