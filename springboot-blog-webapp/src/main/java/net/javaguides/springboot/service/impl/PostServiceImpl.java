@@ -8,6 +8,7 @@ import net.javaguides.springboot.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,5 +48,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public PostDto findPostByUrl(String postUrl) {
+            Post post = postRepository.findByUrl(postUrl).get();
+            return PostMapper.mapToPostDto(post);
     }
 }

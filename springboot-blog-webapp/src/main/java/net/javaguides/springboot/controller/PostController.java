@@ -16,6 +16,9 @@ import java.util.List;
 
 @Controller
 public class PostController {
+
+    private static final String URL_CONSTANT = "redirect:/admin/posts";
+
     private PostService postService;
 
     @Autowired
@@ -48,7 +51,7 @@ public class PostController {
         }
         postDto.setUrl(getUrl(postDto.getTitle()));
         postService.createPost(postDto);
-        return "redirect:/admin/posts";
+        return URL_CONSTANT;
     }
 
     // handler method to handle edit post request
@@ -61,21 +64,29 @@ public class PostController {
 
     // handler method to handle edit post form submit request
     @PostMapping("/admin/posts/{postId}")
-    private String updatePost(@PathVariable("postId") Long postId, @Valid @ModelAttribute("post") PostDto post, BindingResult result, Model model){
+    public String updatePost(@PathVariable("postId") Long postId, @Valid @ModelAttribute("post") PostDto post, BindingResult result, Model model){
         if (result.hasErrors()) {
             model.addAttribute("post", post);
             return "admin/edit_post";
         }
         post.setId(postId);
         postService.updatePost(post);
-        return "redirect:/admin/posts";
+        return URL_CONSTANT;
     }
 
     // handler method to handle delete post request
     @GetMapping("/admin/posts/{postId}/delete")
     public String deletePost(@PathVariable("postId") Long postId) {
         postService.deletePost(postId);
-        return "redirect:/admin/posts";
+        return URL_CONSTANT;
+    }
+
+    // handler method to handle view post request
+    @GetMapping("/admin/posts/{postUrl}/view")
+    public String viewPost(@PathVariable("postUrl") String postUrl, Model model) {
+        PostDto postDto = postService.findPostByUrl(postUrl);
+        model.addAttribute("post", postDto);
+        return "/admin/view_post";
     }
 
     private static String getUrl(String postTitle){
