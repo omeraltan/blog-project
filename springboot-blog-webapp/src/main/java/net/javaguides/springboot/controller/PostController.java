@@ -1,7 +1,9 @@
 package net.javaguides.springboot.controller;
 
 import jakarta.validation.Valid;
+import net.javaguides.springboot.dto.CommentDto;
 import net.javaguides.springboot.dto.PostDto;
+import net.javaguides.springboot.service.CommentService;
 import net.javaguides.springboot.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,10 +19,12 @@ public class PostController {
     private static final String URL_CONSTANT = "redirect:/admin/posts";
 
     private PostService postService;
+    private CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, CommentService commentService) {
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     // create handler method, get REQUEST AND RETURN MODEL AND VİEW
@@ -29,6 +33,21 @@ public class PostController {
         List<PostDto> posts = postService.findAllPosts();
         model.addAttribute("posts", posts);
         return "/admin/posts";
+    }
+
+    // handler method to handle list comments request
+    @GetMapping("/admin/posts/comments")
+    public String postComments(Model model){
+        List<CommentDto> comments = commentService.findAllComments();
+        model.addAttribute("comments", comments);
+        return "admin/comments";
+    }
+
+    // handler method to handle delete comment request
+    @GetMapping("/admin/posts/comments/{commentId}")
+    public String deleteComment(@PathVariable("commentId") Long commentId){
+        commentService.deleteComment(commentId);
+        return "redirect:/admin/posts/comments";
     }
 
     // handler method to handle new post request
