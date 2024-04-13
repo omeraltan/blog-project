@@ -5,4 +5,6 @@ import net.javaguides.springboot.entity.User;
 
 public interface UserService {
     void saveUser(RegistrationDto registrationDto);
+
+    User findByEmail(String email);
 }
