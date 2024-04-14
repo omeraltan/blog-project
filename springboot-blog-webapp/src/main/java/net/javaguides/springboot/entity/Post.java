@@ -31,6 +31,9 @@ public class Post {
     private LocalDateTime createdOn;
     @UpdateTimestamp
     private LocalDateTime updatedOn;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Comment> comments = new HashSet<>();
 }
